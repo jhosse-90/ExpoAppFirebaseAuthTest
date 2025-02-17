@@ -9,9 +9,7 @@
  * home
  */
 
-import { auth } from "@/firebaseConfig";
 import { useRootNavigationState, useRouter, useSegments } from "expo-router";
-import { onAuthStateChanged } from "firebase/auth";
 import { createContext, useContext, useEffect, useState } from "react";
 
 const AuthContext = createContext(null)
@@ -40,17 +38,11 @@ function useProtectedRoute(user){
 }
 
 export function Provider({children}){
-    const [user, setUser] = useState(false)
+    const router = useRouter()
 
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-          setUser(user);
-        });
-        return () => unsubscribe();
-      }, []);
+    const [user, setUser] = useState(false)
     
-      useProtectedRoute(user);
-    
+    useProtectedRoute(user)
     const signIn = () => {} //Login
     const signUp = () => {} //Register
     const signOut = () => {} //Exit
