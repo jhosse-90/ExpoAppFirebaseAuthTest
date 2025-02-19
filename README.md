@@ -48,3 +48,136 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+
+## Base SignUp 
+import { StyleSheet, Text, View, TextInput, Button, TouchableOpacity, Alert } from 'react-native'
+import React from 'react'
+import {router} from 'expo-router'
+import {createUserWithEmailAndPassword} from 'firebase/auth'
+import { auth } from '../../firebaseConfig'
+import { useAuth } from '@/context/auth'
+
+const signUp = () => {
+
+  const [email, setEmail] = React.useState('')
+  const [password, setPassword] = React.useState('')
+
+  const {setUser} = useAuth()
+
+  const onHandlerSignUp = async () =>{
+    const response = await  createUserWithEmailAndPassword(auth, email, password)
+    console.warn(response);
+    //
+    if(response.user){
+      setUser(response.user)
+    }else{
+      Alert.alert('An Error was ocurred')
+    }
+
+  }
+
+  return (
+    <View style={styles.container}> 
+      <Text style={{marginBottom: 40,
+        fontSize: 20,
+        fontWeight: 800
+      }}>Sign Up or Register</Text>
+      <Text>Email</Text>
+      <TextInput style={styles.input}
+      value={email} onChangeText={setEmail} >
+      </TextInput>
+      <Text>Password</Text>
+      <TextInput  style={styles.input}
+       value={password} onChangeText={setPassword} 
+      secureTextEntry={true}>
+      </TextInput>
+      <Button color={'black'} title='Sign Up!' onPress={() => onHandlerSignUp()} />
+      <TouchableOpacity onPress={() => router.replace('/sign-in')}>
+        <Text style={{marginTop: 40, color: '#0091f7'}}>Do you have an Account?</Text>
+      </TouchableOpacity>
+    </View>
+  )
+}
+export default signUp
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  input:{
+    height: 40,
+    width: 200,
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
+  }
+})
+##
+
+## Base Home
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { auth } from '@/firebaseConfig'
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { onAuthStateChanged, signOut } from '@firebase/auth';
+import { router } from 'expo-router';
+import {useAuth} from '@/context/auth'
+
+const home = () => {
+    const [email, setEmail] = useState('')
+
+    const {setUser} = useAuth()
+
+    useEffect(() => {
+        const user = auth.currentUser;
+        if(user){
+            setEmail(user.email)
+        }else{
+            setEmail('Not Authenticated')
+        }
+    }, [])
+
+    const handleSignOut = () => {
+      signOut(auth)
+      .then(() => {
+        setEmail('Not Authentiqued')
+        setUser(null)
+      })
+      .catch((error) => {
+        console.error('Error SignOut: ', error)
+      })
+    }
+
+  return (
+    <View style={styles.container}>
+      <Text style={{fontSize: 32}}>home</Text>
+      <Text style={{marginTop: 15, marginBottom: 15}}>
+        Mail: {email}
+      </Text>
+      <TouchableOpacity onPress={handleSignOut} style={styles.button}>
+        <Icon name='sign-out' size={20} color="#fff"/>
+        <Text style={styles.buttonText}>Singn Out :)</Text>
+      </TouchableOpacity>
+    </View>
+  )
+}
+export default home
+const styles = StyleSheet.create({
+    container: {
+        flex: 1, justifyContent: 'center', alignItems: 'center'
+    },
+    button: {
+      flexDirection: 'row', alignItems: 'center', 
+      marginTop: 20, backgroundColor: 'yellowgreen',
+      padding: 6, borderRadius: 10
+    }, 
+    buttonText: {
+      marginLeft: 10,
+      fontSize: 14,
+      color: '#fff'
+    }
+})
+##

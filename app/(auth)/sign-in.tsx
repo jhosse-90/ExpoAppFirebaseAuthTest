@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, TextInput, Button, TouchableOpacity, Alert } fr
 import React from 'react'
 import { router } from 'expo-router'
 import { useAuth } from '@/context/auth'
-import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth'
+import { signInWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '@/firebaseConfig'
 
 const signIn = () => {
@@ -24,7 +24,7 @@ const signIn = () => {
     <View style={styles.container}>
       <Text style={{marginBottom: 40, fontSize: 20, fontWeight: 800}}>sign-in</Text>
       <Text>Mail</Text>
-      <TextInput style={styles.input} onChangeText={setEmail}
+      <TextInput style={styles.input} onChangeText={setEmail} autoCapitalize='none'
       value = {email}>
       </TextInput>
       <Text>Password</Text>
