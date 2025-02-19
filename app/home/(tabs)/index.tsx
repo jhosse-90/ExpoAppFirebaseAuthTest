@@ -1,47 +1,45 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { auth, db } from '@/firebaseConfig'
+import { auth } from '@/firebaseConfig'
 import Icon from 'react-native-vector-icons/FontAwesome';
-//from user data
-import { doc, getDoc } from 'firebase/firestore';
+import { onAuthStateChanged, signOut } from '@firebase/auth';
+import { router } from 'expo-router';
+import {useAuth} from '@/context/auth'
 
 const home = () => {
-    const [email, setEmail] = useState('');
-    const [username, setUsername] = useState('');
-    const [photoURL, setPhotoURL] = useState('');
+    const [email, setEmail] = useState('')
+
+    const {setUser} = useAuth()
 
     useEffect(() => {
-      const fetchUserData = async () => {
         const user = auth.currentUser;
-        if (user) {
-          setEmail(user.email ?? 'No Email');
-          const userDoc = await getDoc(doc(db, 'users', user.uid));
-          if (userDoc.exists()) {
-            const userData = userDoc.data();
-            setUsername(userData.username);
-            setPhotoURL(userData.photoURL);
-          }
-        } else {
-          setEmail('Not Authenticated');
+        if(user){
+            setEmail(user.email)
+        }else{
+            setEmail('Not Authenticated')
         }
-      };
-  
-      fetchUserData();
     }, [])
 
     const handleSignOut = () => {
-
+      signOut(auth)
+      .then(() => {
+        setEmail('Not Authentiqued')
+        setUser(null)
+      })
+      .catch((error) => {
+        console.error('Error SignOut: ', error)
+      })
     }
 
   return (
     <View style={styles.container}>
-      <Text style={{fontSize: 28, fontWeight: 600, marginBottom: 20}}>home</Text>
-      {photoURL && <Image source={{ uri: photoURL }} style={styles.profileImage} />}
-      <Text style={{marginBottom: 15}}>
-        Mail: {email} 
+      <Text style={{fontSize: 32}}>home</Text>
+      <Text style={{marginTop: 15, marginBottom: 15}}>
+        Mail: {email}
       </Text>
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity onPress={handleSignOut} style={styles.button}>
         <Icon name='sign-out' size={20} color="#fff"/>
+        <Text style={styles.buttonText}>Singn Out :)</Text>
       </TouchableOpacity>
     </View>
   )
@@ -56,10 +54,9 @@ const styles = StyleSheet.create({
       marginTop: 20, backgroundColor: 'yellowgreen',
       padding: 6, borderRadius: 10
     }, 
-    profileImage: {
-      width: 100,
-      height: 100,
-      borderRadius: 50,
-      marginBottom: 8,
-    },
+    buttonText: {
+      marginLeft: 10,
+      fontSize: 14,
+      color: '#fff'
+    }
 })
