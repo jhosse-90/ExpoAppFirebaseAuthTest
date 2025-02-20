@@ -3,9 +3,10 @@ import React from 'react';
 import { Platform, View, StyleSheet } from 'react-native';
 
 import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import Icon from '@expo/vector-icons/FontAwesome6';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -14,7 +15,7 @@ export default function TabLayout() {
     <View style={styles.container}>
       <Tabs
         screenOptions={{
-          tabBarActiveTintColor: 'orangered',
+          tabBarActiveTintColor: '#fff',
           tabBarInactiveTintColor: '#fff', // Set the inactive color here
           headerShown: false,
           tabBarButton: HapticTab,
@@ -22,32 +23,42 @@ export default function TabLayout() {
             ios: {
               // Use a transparent background on iOS to show the blur effect
               position: 'absolute',
-              backgroundColor: 'black', // Add border color
-              borderTopLeftRadius: 30, // Add border radius
-              borderTopRightRadius: 15, // Add border radius
+              backgroundColor: '#051B2C', // Add border color
+              borderTopLeftRadius: 18, // Add border radius
+              borderTopRightRadius: 18, // Add border radius
             },
             default: {
-              backgroundColor: 'black', // Set the background color to black // Add border color
-              borderTopLeftRadius: 30, // Add border radius
-              borderTopRightRadius: 30, // Add border radius
+              backgroundColor: '#051B2C', // Set the background color to black // Add border color
+              borderTopLeftRadius: 18, // Add border radius
+              borderTopRightRadius: 18, // Add border radius
             },
           }),
-          tabBarLabelStyle: {
-            color: '#fff', // Set your desired title color here
-          },
+          
+          //tabBarInactiveStyle: 
         }}>
         <Tabs.Screen
           name="index"
           options={{
             title: 'Home',
-            tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+            tabBarActiveTintColor: '#0BDBC7',
+            //tabBarLabelStyle: '#0BDBC7',
+            tabBarIcon: ({ color }) => <Icon name="fire" size={18} color={color} />,
+          }}
+        />
+        <Tabs.Screen
+          name="post"
+          options={{
+            title: 'Post',
+            tabBarActiveTintColor: '#0BDBC7',
+            tabBarIcon: ({ color }) => <Icon name="newspaper" size={18} color={color} />,
           }}
         />
         <Tabs.Screen
           name="explore"
           options={{
             title: 'Explore',
-            tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+            tabBarActiveTintColor: '#0BDBC7',
+            tabBarIcon: ({ color }) => <Icon name="compass" size={20} color={color} />,
           }}
         />
       </Tabs>

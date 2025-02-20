@@ -1,10 +1,11 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image, ActivityIndicator } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { auth, db } from '@/firebaseConfig';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from '@expo/vector-icons/FontAwesome6';
 import { signOut } from '@firebase/auth';
 import { useAuth } from '@/context/auth';
 import { doc, getDoc } from 'firebase/firestore';
+import { router } from 'expo-router';
 
 const Home = () => {
   const [email, setEmail] = useState('');
@@ -58,14 +59,22 @@ const Home = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={{ fontSize: 28, fontWeight: '600', marginBottom: 20 }}>Home</Text>
-      <Image source={{ uri: photoURL }} style={styles.profileImage} />
-      <Text style={{ marginBottom: 5 }}>Welcome: {username}</Text>
-      <Text style={{ marginBottom: 15 }}>Mail: {email}</Text>
-      <TouchableOpacity onPress={handleSignOut} style={styles.button}>
-        <Icon name='sign-out' size={20} color="#fff" />
-        <Text style={styles.buttonText}>Sign Out :)</Text>
-      </TouchableOpacity>
+      <View style={{alignItems: 'center', flex: 0.5, justifyContent: 'center'}}>
+        <Image source={{ uri: photoURL }} style={styles.profileImage} />
+        <Text style={{ marginBottom: 5 }}>Welcome: {username}</Text>
+        <Text style={{ marginBottom: 15 }}>Mail: {email}</Text>
+      </View>
+      <View style={{alignItems: 'center', flex: 0.5, justifyContent: 'flex-start'}}>
+        <Text style={{fontWeight: 800, fontSize: 18}}>Actions</Text>
+        <TouchableOpacity onPress={() => router.navigate('/home/screens/UserPostCreate')} style={styles.buttonCreatePost}>
+          <Icon name='plus' size={20} color="#fff" />
+          <Text style={styles.buttonText}>Create a Post :)</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleSignOut} style={styles.buttonSignOut}>
+          <Icon name='arrow-right-from-bracket' size={20} color="#fff" />
+          <Text style={styles.buttonText}>Sign Out :)</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -78,17 +87,25 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  button: {
+  buttonSignOut: {
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 20,
-    backgroundColor: 'yellowgreen',
+    backgroundColor: '#FF4854',
+    padding: 6,
+    borderRadius: 10,
+  },
+  buttonCreatePost: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 20,
+    backgroundColor: '#051B2C',
     padding: 6,
     borderRadius: 10,
   },
   profileImage: {
-    width: 100,
-    height: 100,
+    width: 80,
+    height: 80,
     borderRadius: 50,
     marginBottom: 8,
   },
